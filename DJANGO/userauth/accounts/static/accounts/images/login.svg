@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800px" height="600px" viewBox="0 0 800 600" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <title>Login</title>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect fill="#F0F5FF" x="0" y="0" width="800" height="600"></rect>
+        <g transform="translate(150, 100)">
+            <circle fill="#3498DB" cx="250" cy="200" r="150"></circle>
+            <circle fill="#FFFFFF" cx="250" cy="150" r="50"></circle>
+            <path d="M250,350 C180,350 120,300 120,240 C120,180 180,200 250,200 C320,200 380,180 380,240 C380,300 320,350 250,350 Z" fill="#FFFFFF"></path>
+            <rect fill="#2980B9" x="100" y="380" width="300" height="20" rx="10"></rect>
+            <rect fill="#2980B9" x="150" y="410" width="200" height="20" rx="10"></rect>
+        </g>
+    </g>
+</svg>

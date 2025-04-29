@@ -1,0 +1,449 @@
+{% extends 'netflix-base.html' %}
+{% load static %}
+
+{% block title %}{{ movie.title }} ({{ movie.year }}) - MovieMatcher{% endblock %}
+
+{% block content %}
+<div class="movie-detail-container">
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+        <div class="message {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <div class="movie-detail-hero">
+        {% if movie.poster_url %}
+        <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="movie-backdrop">
+        {% else %}
+        <div class="movie-backdrop-placeholder">
+            <span>{{ movie.title|slice:":1" }}</span>
+        </div>
+        {% endif %}
+        
+        <div class="movie-detail-overlay">
+            <div class="movie-detail-content">
+                <h1 class="movie-detail-title">{{ movie.title }} <span class="movie-year">({{ movie.year }})</span></h1>
+                
+                <div class="movie-detail-meta">
+                    <span class="movie-duration">{{ movie.duration_minutes }} min</span>
+                    <span class="movie-rating">IMDb: {{ movie.imdb_rating }}/10</span>
+                    {% if movie.streaming_platform %}
+                    <span class="movie-platform">{{ movie.streaming_platform }}</span>
+                    {% endif %}
+                </div>
+                
+                <div class="movie-genres-detailed">
+                    {% for genre in movie.genres.all %}
+                    <span class="genre-tag">{{ genre.name }}</span>
+                    {% endfor %}
+                </div>
+                
+                <div class="movie-languages-detailed">
+                    {% for language in movie.languages.all %}
+                    <span class="language-tag">{{ language.name }}</span>
+                    {% endfor %}
+                </div>
+                
+                <div class="movie-detail-description">
+                    <p>{{ movie.description }}</p>
+                </div>
+                
+                <div class="movie-detail-actions">
+                    {% if movie.streaming_platform %}
+                    <a href="{% url 'watch_movie' movie.id %}" class="btn-watch-now" target="_blank">
+                        <i class="fas fa-play"></i> Watch Now
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'movie_recommendations' %}" class="btn-back">
+                        <i class="fas fa-arrow-left"></i> Back to Recommendations
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="movie-detail-sections">
+        <!-- User Rating Section -->
+        <div class="movie-rating-section">
+            <h2 class="section-title">Rate This Movie</h2>
+            <form method="post" class="rating-form">
+                {% csrf_token %}
+                <div class="rating-stars">
+                    <div class="rating-label">Your Rating:</div>
+                    <div class="rating-input-container">
+                        {{ form.rating }}
+                        <span class="rating-max">/5</span>
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit-rating">Submit Rating</button>
+            </form>
+        </div>
+        
+        <!-- Similar Movies Section -->
+        {% if similar_movies %}
+        <div class="similar-movies-section">
+            <h2 class="section-title">Similar Movies You Might Like</h2>
+            <div class="similar-movies-grid">
+                {% for similar in similar_movies %}
+                <div class="similar-movie-card">
+                    <a href="{% url 'movie_detail' similar.id %}" class="similar-movie-link">
+                        <div class="similar-movie-poster">
+                            {% if similar.poster_url %}
+                            <img src="{{ similar.poster_url }}" alt="{{ similar.title }}">
+                            {% else %}
+                            <div class="no-poster">
+                                <span>{{ similar.title|slice:":1" }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="similar-movie-info">
+                            <h3 class="similar-movie-title">{{ similar.title }}</h3>
+                            <div class="similar-movie-meta">
+                                <span class="similar-movie-year">{{ similar.year }}</span>
+                                <span class="similar-movie-rating">{{ similar.imdb_rating }}</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .movie-detail-container {
+        padding-top: 0;
+    }
+    
+    .messages-container {
+        max-width: 1200px;
+        margin: 0 auto 20px;
+    }
+    
+    .message {
+        padding: 12px 16px;
+        border-radius: 4px;
+        margin-bottom: 10px;
+    }
+    
+    .message.success {
+        background-color: rgba(40, 167, 69, 0.2);
+        border-left: 4px solid #28a745;
+    }
+    
+    .movie-detail-hero {
+        position: relative;
+        height: 600px;
+        overflow: hidden;
+    }
+    
+    .movie-backdrop {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .movie-backdrop-placeholder {
+        width: 100%;
+        height: 100%;
+        background-color: var(--primary-dark);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 120px;
+        color: white;
+        font-weight: bold;
+    }
+    
+    .movie-detail-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(to right, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0.4) 100%);
+        display: flex;
+        align-items: center;
+    }
+    
+    .movie-detail-content {
+        max-width: 800px;
+        padding: 40px;
+    }
+    
+    .movie-detail-title {
+        font-size: 42px;
+        margin-bottom: 16px;
+        color: white;
+    }
+    
+    .movie-year {
+        font-weight: normal;
+        opacity: 0.8;
+    }
+    
+    .movie-detail-meta {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 20px;
+        color: #aaa;
+    }
+    
+    .movie-rating {
+        color: var(--accent-color);
+    }
+    
+    .movie-platform {
+        color: var(--primary-light);
+    }
+    
+    .movie-genres-detailed {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 16px;
+    }
+    
+    .genre-tag {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+    
+    .movie-languages-detailed {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 20px;
+    }
+    
+    .language-tag {
+        background-color: rgba(10, 87, 176, 0.2);
+        color: var(--primary-light);
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+    
+    .movie-detail-description {
+        margin-bottom: 30px;
+        color: #ddd;
+        line-height: 1.6;
+    }
+    
+    .movie-detail-actions {
+        display: flex;
+        gap: 16px;
+    }
+    
+    .btn-watch-now {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background-color: var(--primary-color);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background-color 0.3s;
+    }
+    
+    .btn-watch-now:hover {
+        background-color: var(--primary-dark);
+    }
+    
+    .btn-back {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 4px;
+        text-decoration: none;
+        transition: background-color 0.3s;
+    }
+    
+    .btn-back:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .movie-detail-sections {
+        max-width: 1200px;
+        margin: 40px auto;
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 40px;
+    }
+    
+    .movie-rating-section {
+        background-color: var(--background-lighter);
+        padding: 30px;
+        border-radius: 8px;
+    }
+    
+    .section-title {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: var(--text-color);
+    }
+    
+    .rating-form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .rating-stars {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+    
+    .rating-label {
+        font-size: 16px;
+        color: #aaa;
+    }
+    
+    .rating-input-container {
+        display: flex;
+        align-items: center;
+    }
+    
+    .rating-input {
+        width: 60px;
+        padding: 10px;
+        background-color: #333;
+        border: none;
+        border-radius: 4px;
+        color: var(--text-color);
+        font-size: 18px;
+        text-align: center;
+    }
+    
+    .rating-max {
+        color: #aaa;
+        margin-left: 4px;
+    }
+    
+    .btn-submit-rating {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 4px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    
+    .btn-submit-rating:hover {
+        background-color: var(--primary-dark);
+    }
+    
+    .similar-movies-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 20px;
+    }
+    
+    .similar-movie-card {
+        background-color: var(--background-lighter);
+        border-radius: 4px;
+        overflow: hidden;
+        transition: transform 0.3s;
+    }
+    
+    .similar-movie-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .similar-movie-link {
+        text-decoration: none;
+        color: inherit;
+    }
+    
+    .similar-movie-poster {
+        height: 250px;
+        overflow: hidden;
+    }
+    
+    .similar-movie-poster img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s;
+    }
+    
+    .similar-movie-card:hover .similar-movie-poster img {
+        transform: scale(1.1);
+    }
+    
+    .similar-movie-info {
+        padding: 15px;
+    }
+    
+    .similar-movie-title {
+        font-size: 16px;
+        margin: 0 0 8px 0;
+        color: var(--text-color);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .similar-movie-meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+    }
+    
+    .similar-movie-year {
+        color: #aaa;
+    }
+    
+    .similar-movie-rating {
+        color: var(--accent-color);
+    }
+    
+    @media (max-width: 1024px) {
+        .movie-detail-hero {
+            height: 500px;
+        }
+        
+        .movie-detail-title {
+            font-size: 36px;
+        }
+        
+        .movie-detail-sections {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .movie-detail-hero {
+            height: 400px;
+        }
+        
+        .movie-detail-content {
+            padding: 20px;
+        }
+        
+        .movie-detail-title {
+            font-size: 28px;
+        }
+        
+        .movie-detail-actions {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}

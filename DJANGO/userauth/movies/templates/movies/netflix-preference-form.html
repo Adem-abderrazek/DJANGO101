@@ -1,0 +1,227 @@
+{% extends 'netflix-base.html' %}
+{% load static %}
+
+{% block title %}Movie Preferences{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="preferences-header">
+        <h1 class="page-title">Your Movie Preferences</h1>
+        <p class="page-subtitle">Tell us what you like, and we'll recommend movies just for you!</p>
+    </div>
+    
+    <div class="preferences-container">
+        <form method="post" class="preferences-form">
+            {% csrf_token %}
+            
+            <div class="preferences-section">
+                <h2 class="section-title">Genre Preferences</h2>
+                <p class="section-desc">Select one or more genres you enjoy watching</p>
+                
+                <div class="genres-grid">
+                    {% for checkbox in form.genres %}
+                    <div class="genre-checkbox">
+                        {{ checkbox }}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="preferences-section">
+                <h2 class="section-title">How are you feeling today?</h2>
+                <p class="section-desc">We'll recommend movies that match your current mood</p>
+                
+                <div class="mood-selector">
+                    {{ form.mood }}
+                </div>
+            </div>
+            
+            <div class="preferences-section">
+                <h2 class="section-title">Language Preferences</h2>
+                <p class="section-desc">Select one or more languages you prefer</p>
+                
+                <div class="languages-grid">
+                    {% for checkbox in form.languages %}
+                    <div class="language-checkbox">
+                        {{ checkbox }}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="preferences-row">
+                <div class="preferences-column">
+                    <h2 class="section-title">Movie Length</h2>
+                    <p class="section-desc">How long do you want the movie to be?</p>
+                    
+                    <div class="length-selector">
+                        {{ form.length }}
+                    </div>
+                </div>
+                
+                <div class="preferences-column">
+                    <h2 class="section-title">Release Period</h2>
+                    <p class="section-desc">Do you prefer recent releases or classics?</p>
+                    
+                    <div class="period-selector">
+                        {{ form.period }}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="preferences-actions">
+                <button type="submit" class="btn-submit-preferences">Get Recommendations</button>
+                <a href="{% url 'movie_recommendations' %}" class="btn-cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .preferences-header {
+        margin-bottom: 40px;
+        text-align: center;
+    }
+    
+    .page-title {
+        font-size: 32px;
+        margin-bottom: 16px;
+        color: var(--text-color);
+    }
+    
+    .page-subtitle {
+        font-size: 18px;
+        color: #aaa;
+    }
+    
+    .preferences-container {
+        max-width: 900px;
+        margin: 0 auto;
+        background-color: var(--background-lighter);
+        border-radius: 8px;
+        padding: 40px;
+    }
+    
+    .preferences-section {
+        margin-bottom: 40px;
+    }
+    
+    .section-title {
+        font-size: 24px;
+        margin-bottom: 10px;
+        color: var(--text-color);
+    }
+    
+    .section-desc {
+        font-size: 16px;
+        color: #aaa;
+        margin-bottom: 20px;
+    }
+    
+    .genres-grid, .languages-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+    }
+    
+    .genre-checkbox, .language-checkbox {
+        display: flex;
+        align-items: center;
+    }
+    
+    .genre-checkbox label, .language-checkbox label {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+    }
+    
+    .genre-checkbox input[type="checkbox"], .language-checkbox input[type="checkbox"] {
+        margin-right: 10px;
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+    }
+    
+    .mood-selector select, .length-selector select, .period-selector select {
+        width: 100%;
+        padding: 12px;
+        background-color: #333;
+        border: none;
+        border-radius: 4px;
+        color: var(--text-color);
+        font-size: 16px;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23aaa' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        padding-right: 36px;
+    }
+    
+    .mood-selector select:focus, .length-selector select:focus, .period-selector select:focus {
+        outline: 2px solid var(--primary-color);
+    }
+    
+    .preferences-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-bottom: 40px;
+    }
+    
+    .preferences-actions {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+    }
+    
+    .btn-submit-preferences {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 14px 28px;
+        border-radius: 4px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    
+    .btn-submit-preferences:hover {
+        background-color: var(--primary-dark);
+    }
+    
+    .btn-cancel {
+        background-color: transparent;
+        color: var(--text-color);
+        border: 1px solid #555;
+        padding: 14px 28px;
+        border-radius: 4px;
+        font-size: 16px;
+        text-decoration: none;
+        transition: background-color 0.3s;
+    }
+    
+    .btn-cancel:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    @media (max-width: 768px) {
+        .preferences-container {
+            padding: 30px 20px;
+        }
+        
+        .preferences-row {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        .genres-grid, .languages-grid {
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        }
+        
+        .preferences-actions {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}

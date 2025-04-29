@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ movie.title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="movie-detail-container">
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="movie-detail">
+            <div class="movie-poster-large">
+                {% if movie.poster_url %}
+                <img src="{{ movie.poster_url }}" alt="{{ movie.title }}">
+                {% else %}
+                <div class="no-poster-large">
+                    <span>{{ movie.title|slice:":1" }}</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="movie-info-detailed">
+                <h2 class="movie-title-large">{{ movie.title }} ({{ movie.year }})</h2>
+
+                <div class="movie-metadata">
+                    <div class="metadata-item">
+                        <span class="metadata-label">Duration:</span>
+                        <span class="metadata-value">{{ movie.duration_minutes }} minutes</span>
+                    </div>
+
+                    <div class="metadata-item">
+                        <span class="metadata-label">IMDb Rating:</span>
+                        <span class="metadata-value">{{ movie.imdb_rating }}/10</span>
+                    </div>
+
+                    {% if movie.streaming_platform %}
+                    <div class="metadata-item">
+                        <span class="metadata-label">Available on:</span>
+                        <span class="metadata-value">{{ movie.streaming_platform }}</span>
+                    </div>
+                    <div class="watch-now-button">
+                        <a href="{% url 'watch_movie' movie.id %}" class="btn btn-watch" target="_blank">Watch Now</a>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="movie-genres-detailed">
+                    {% for genre in movie.genres.all %}
+                    <span class="genre-tag">{{ genre.name }}</span>
+                    {% endfor %}
+                </div>
+
+                <div class="movie-languages">
+                    <span class="metadata-label">Languages:</span>
+                    {% for language in movie.languages.all %}
+                    <span class="language-tag">{{ language.name }}</span>
+                    {% endfor %}
+                </div>
+
+                <div class="movie-description-full">
+                    <h3>Synopsis</h3>
+                    <p>{{ movie.description }}</p>
+                </div>
+
+                <div class="user-rating-section">
+                    <h3>Rate this movie</h3>
+                    <form method="post" class="rating-form">
+                        {% csrf_token %}
+                        <div class="rating-stars">
+                            {{ form.rating }}
+                        </div>
+                        <button type="submit" class="btn">Submit Rating</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {% if similar_movies %}
+        <div class="similar-movies-section">
+            <h3>Similar Movies You Might Like</h3>
+            <div class="similar-movies">
+                {% for similar in similar_movies %}
+                <div class="similar-movie-card">
+                    <a href="{% url 'movie_detail' similar.id %}">
+                        {% if similar.poster_url %}
+                        <img src="{{ similar.poster_url }}" alt="{{ similar.title }}">
+                        {% else %}
+                        <div class="no-poster-small">
+                            <span>{{ similar.title|slice:":1" }}</span>
+                        </div>
+                        {% endif %}
+                        <div class="similar-movie-info">
+                            <h4>{{ similar.title }}</h4>
+                            <span class="year">{{ similar.year }}</span>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="actions">
+            <a href="{% url 'movie_recommendations' %}" class="btn">Back to Recommendations</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

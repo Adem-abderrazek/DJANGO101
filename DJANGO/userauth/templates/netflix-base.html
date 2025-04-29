@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MovieMatcher{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'accounts/netflix-style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="main-navbar">
+        <div class="navbar-container">
+            <a href="{% url 'home' %}" class="navbar-logo">MovieMatcher</a>
+            
+            <div class="navbar-links">
+                <a href="{% url 'home' %}" class="{% if request.path == '/' %}active{% endif %}">Home</a>
+                <a href="{% url 'movie_recommendations' %}" class="{% if 'recommendations' in request.path %}active{% endif %}">Recommendations</a>
+                <a href="{% url 'movie_preferences' %}" class="{% if 'preferences' in request.path %}active{% endif %}">Preferences</a>
+            </div>
+            
+            <div class="navbar-user">
+                <div class="dropdown">
+                    <div class="user-avatar">
+                        {{ request.user.username.0|upper }}
+                    </div>
+                    <div class="dropdown-menu">
+                        <a href="{% url 'home' %}">Profile</a>
+                        <a href="{% url 'movie_preferences' %}">Preferences</a>
+                        <a href="{% url 'logout' %}">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-info">
+                <div class="footer-logo">
+                    <h2>MovieMatcher</h2>
+                    <p>Your personal movie recommender</p>
+                </div>
+                <div class="footer-social">
+                    <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h3>Navigation</h3>
+                    <ul>
+                        <li><a href="{% url 'home' %}">Home</a></li>
+                        <li><a href="{% url 'movie_recommendations' %}">Recommendations</a></li>
+                        <li><a href="{% url 'movie_preferences' %}">Preferences</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>About</h3>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Careers</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Cookie Preferences</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 MovieMatcher. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Add scrolled class to navbar when scrolling
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.main-navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

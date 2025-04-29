@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Movie Preferences{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="form-container">
+        <h2>Your Movie Preferences</h2>
+        <p class="subtitle">Tell us what you like, and we'll recommend movies just for you!</p>
+
+        <form method="post" class="preference-form">
+            {% csrf_token %}
+
+            <div class="form-section">
+                <h3>Genre Preferences</h3>
+                <p class="form-help">Select one or more genres you enjoy watching</p>
+                <div class="genre-options">
+                    {% for checkbox in form.genres %}
+                    <div class="checkbox-item">
+                        {{ checkbox }}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>How are you feeling today?</h3>
+                <p class="form-help">We'll recommend movies that match your current mood</p>
+                <div class="mood-selector">
+                    {{ form.mood }}
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Language Preferences</h3>
+                <p class="form-help">Select one or more languages you prefer</p>
+                <div class="language-options">
+                    {% for checkbox in form.languages %}
+                    <div class="checkbox-item">
+                        {{ checkbox }}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Movie Length</h3>
+                <p class="form-help">How long do you want the movie to be?</p>
+                <div class="length-selector">
+                    {{ form.length }}
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Release Period</h3>
+                <p class="form-help">Do you prefer recent releases or classics?</p>
+                <div class="period-selector">
+                    {{ form.period }}
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn">Get Recommendations</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

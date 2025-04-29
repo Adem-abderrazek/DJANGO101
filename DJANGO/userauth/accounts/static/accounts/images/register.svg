@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800px" height="600px" viewBox="0 0 800 600" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <title>Register</title>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect fill="#F0F5FF" x="0" y="0" width="800" height="600"></rect>
+        <g transform="translate(150, 100)">
+            <rect fill="#3498DB" x="150" y="100" width="200" height="300" rx="10"></rect>
+            <rect fill="#FFFFFF" x="180" y="130" width="140" height="20" rx="5"></rect>
+            <rect fill="#FFFFFF" x="180" y="170" width="140" height="20" rx="5"></rect>
+            <rect fill="#FFFFFF" x="180" y="210" width="140" height="20" rx="5"></rect>
+            <rect fill="#FFFFFF" x="180" y="250" width="140" height="20" rx="5"></rect>
+            <circle fill="#2980B9" cx="250" cy="320" r="30"></circle>
+            <path d="M240,320 L260,320 M250,310 L250,330" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"></path>
+            <rect fill="#2980B9" x="100" y="420" width="300" height="20" rx="10"></rect>
+            <rect fill="#2980B9" x="150" y="450" width="200" height="20" rx="10"></rect>
+        </g>
+    </g>
+</svg>

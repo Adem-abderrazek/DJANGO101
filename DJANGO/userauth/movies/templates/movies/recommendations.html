@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Movie Recommendations{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="recommendations-container">
+        <h2>Your Movie Recommendations</h2>
+        
+        {% if mood %}
+        <p class="mood-info">Based on your {{ mood.name }} mood</p>
+        {% endif %}
+        
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        {% if movies %}
+        <div class="movie-grid">
+            {% for movie in movies %}
+            <div class="movie-card">
+                <div class="movie-poster">
+                    {% if movie.poster_url %}
+                    <img src="{{ movie.poster_url }}" alt="{{ movie.title }}">
+                    {% else %}
+                    <div class="no-poster">
+                        <span>{{ movie.title|slice:":1" }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="movie-info">
+                    <h3 class="movie-title">{{ movie.title }} ({{ movie.year }})</h3>
+                    <div class="movie-genres">
+                        {% for genre in movie.genres.all %}
+                        <span class="genre-tag">{{ genre.name }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="movie-rating">
+                        <span class="imdb-rating">IMDb: {{ movie.imdb_rating }}/10</span>
+                    </div>
+                    <p class="movie-description">{{ movie.description|truncatechars:100 }}</p>
+                    <a href="{% url 'movie_detail' movie.id %}" class="btn btn-sm">View Details</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-movies">
+            <p>No movies found matching your preferences. Try adjusting your criteria.</p>
+        </div>
+        {% endif %}
+        
+        <div class="actions">
+            <a href="{% url 'movie_preferences' %}" class="btn">Update Preferences</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
